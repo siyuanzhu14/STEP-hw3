@@ -66,8 +66,9 @@ def tokenize(line):
 
 #return a tokens without parentheses, elimilating the priority order of calculation
 def flatten(tokens):
-  left_list = []
-  right_list = []
+    
+  left_list = []#the list containing the positions of '('
+  right_list = []#positions of ')'
   
   index = 0
   while index < len(tokens):
@@ -80,8 +81,14 @@ def flatten(tokens):
   index = 0
   for tempR in right_list:
       tempL = [x for x in left_list if x < tempR][-1]
+
+      #(tempL,tempR) is the contains all the elements we need to deal with now(no parentheses inside)
       tempTokens = list(filter(None,tokens[tempL+1:tempR]))
-      tokens[tempL]={'type':'NUMBER', 'number': evaluate(tempTokens)}#calculate the elements inside the parentheses
+      #use temporary Tokens instead of deleting the empty elements because the positions have been memoed.
+      
+      #calculate the elements inside the parentheses
+      tokens[tempL]={'type':'NUMBER', 'number': evaluate(tempTokens)}
+      
       tokens[tempL+1:tempR+1] = [{}]*(tempR-tempL)
       left_list.remove(tempL)
       
